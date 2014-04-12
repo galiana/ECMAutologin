@@ -87,9 +87,9 @@
     <None Include="App_Config\Include\EcmAutoLogin.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Packages\ECM AutoLogin-0.1.zip" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Packages\" />
     <Folder Include="Serialization\" />
   </ItemGroup>
   <ItemGroup />
