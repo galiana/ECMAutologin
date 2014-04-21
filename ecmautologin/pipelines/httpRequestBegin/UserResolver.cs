@@ -1,4 +1,5 @@
-﻿using Sitecore.Analytics.Data.DataAccess.DataSets;
+﻿using Galiana.Helpers;
+using Sitecore.Analytics.Data.DataAccess.DataSets;
 using Sitecore.Analytics.Data.Items;
 using Sitecore.Configuration;
 using Sitecore.Data;
@@ -15,7 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
-namespace Galiana
+namespace Galiana.pipelines.httpRequestBegin
 {
     public class UserResolver : HttpRequestProcessor
     {
@@ -46,27 +47,34 @@ namespace Galiana
                             if (contact != null)
                             {
                                 if (!contact.IsAnonymousSubscriber && !contact.IsDisabled && Sitecore.Context.Site.Domain == contact.InnerUser.Domain)
-                                {
-                                    bool VeifyUserAgainstEmail;
-                                    Boolean.TryParse(Settings.GetSetting("ECMAutoLogin.VeifyUserAgainstEmail", "true"), out VeifyUserAgainstEmail);
-                                    if (VeifyUserAgainstEmail)
+                                {                                    
+                                    if (SettingsHelper.VeifyUserAgainstEmail)
                                     {
                                         CampaignItem contentDbItem = (CampaignItem)ItemUtilExt.GetContentDbItem(new ID(camp));
 
                                         if (contentDbItem != null)
                                         {
                                             MessageItem message = Sitecore.Modules.EmailCampaign.Factory.GetMessage(GetMessageId(contentDbItem.Data));
-
-                                            if (message.Subscribers.Contains(contact))
+                                            if (message != null)
                                             {
-                                                AuthenticationManager.Login(contact.InnerUser);
-                                                if (GlobalSettings.Debug)
-                                                    Log.Debug("AutoLogin user  " + contact.Name + " from email: " + message.Subject);
+                                                if (!SettingsHelper.IsLinkExpired(message))
+                                                {
+                                                    if (message.Subscribers.Contains(contact))
+                                                    {
+                                                        AuthenticationManager.Login(contact.InnerUser.Name, SettingsHelper.PersistentLogin);                                                        
+                                                        SessionHelper.AutoLoggedIn = true;
+                                                        if (GlobalSettings.Debug)
+                                                            Log.Debug("AutoLogin user  " + contact.Name + " from email: " + message.Subject);
+                                                    }
+                                                }
                                             }
                                         }
                                         else
                                         {
-                                            AuthenticationManager.Login(contact.InnerUser);
+                                            AuthenticationManager.Login(contact.InnerUser.Name, SettingsHelper.PersistentLogin);
+                                            SessionHelper.AutoLoggedIn = true;
+                                            if (GlobalSettings.Debug)
+                                                Log.Debug("AutoLogin user  " + contact.Name);
                                         }
                                     }
                                 }
