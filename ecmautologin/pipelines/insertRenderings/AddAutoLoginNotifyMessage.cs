@@ -5,10 +5,12 @@ using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using Sitecore.Layouts;
 using Sitecore.Pipelines.InsertRenderings;
+using Sitecore.Web.UI.HtmlControls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.UI;
 
 namespace Galiana.pipelines.insertRenderings
 {
@@ -20,23 +22,24 @@ namespace Galiana.pipelines.insertRenderings
         public override void Process(InsertRenderingsArgs args)
         {
             Assert.ArgumentNotNull(args, "args");
-            if (!SessionHelper.AutoLoggedIn)
+            if (!SessionHelper.ShowAutoLoginMessage)
                 return;
             if (args.ContextItem == null)
             {
                 return;
             }
-            DeviceItem device = Context.Device;
+            DeviceItem device = Sitecore.Context.Device;
             if (device == null)
             {
                 return;
-            }
-            NotifyMessage nm = new NotifyMessage("Hooola");
-            RenderingReference rr = new RenderingReference(nm);
+            }            
+            System.Web.UI.Page page = new System.Web.UI.Page();
+            UserControl controlToLoad = page.LoadControl("~"+SessionHelper.UserSettings.NotificationControl.FilePath) as UserControl;
+            RenderingReference rr = new RenderingReference(controlToLoad);
             rr.Placeholder = "content";
             args.Renderings.Add(rr);
            
-            args.HasRenderings = args.Renderings.Count > 0;
+            args.HasRenderings = args.Renderings.Count > 0;            
         }
     }
 }

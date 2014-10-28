@@ -104,10 +104,14 @@
     <Compile Include="Controls\NotifyMessage.ascx.designer.cs">
       <DependentUpon>NotifyMessage.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\AutoLogin.cs" />
+    <Compile Include="Helpers\ConstantsHelper.cs" />
+    <Compile Include="Helpers\Context.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Helpers\SettingsHelper.cs" />
     <Compile Include="pipelines\httpRequestEnd\ClearAutoLoginCache.cs" />
     <Compile Include="pipelines\insertRenderings\AddAutoLoginNotifyMessage.cs" />
+    <Compile Include="poco\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="pipelines\httpRequestBegin\UserResolver.cs" />
   </ItemGroup>

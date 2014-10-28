@@ -20,6 +20,8 @@ namespace Galiana.pipelines.httpRequestBegin
 {
     public class UserResolver : HttpRequestProcessor
     {
+        
+
         public UserResolver()
         {
         }
@@ -32,50 +34,45 @@ namespace Galiana.pipelines.httpRequestBegin
         {
             Stopwatch timer = Stopwatch.StartNew();
             Assert.ArgumentNotNull(args, "args");
-            if (args.Context.User == null)
+            if (SettingsHelper.DefaultSettings.Sites.Contains(Sitecore.Context.Site.Name))
             {
-                string autstate = args.Context.Request.QueryString[GlobalSettings.AutomationStateQueryKey];
-                if (!string.IsNullOrEmpty(autstate) && ShortID.IsShortID(autstate))
+                if (args.Context.User == null)
                 {
-                    string camp = args.Context.Request.QueryString[GlobalSettings.CampaignQueryStringKey];
-                    if (!string.IsNullOrEmpty(camp) && ShortID.IsShortID(camp))
+                    if (Context.AutomationState != null)
                     {
-                        VisitorDataSet.AutomationStatesRow automationState = AnalyticsHelper.GetAutomationState(new Guid(autstate));
-                        if (automationState != null)
+                        Contact contact = Sitecore.Modules.EmailCampaign.Factory.GetContactFromName(Context.AutomationState.UserName);
+                        if (contact != null)
                         {
-                            Contact contact = Sitecore.Modules.EmailCampaign.Factory.GetContactFromName(automationState.UserName);
-                            if (contact != null)
+                            if (!contact.IsAnonymousSubscriber && !contact.IsDisabled && Sitecore.Context.Site.Domain == contact.InnerUser.Domain)
                             {
-                                if (!contact.IsAnonymousSubscriber && !contact.IsDisabled && Sitecore.Context.Site.Domain == contact.InnerUser.Domain)
-                                {                                    
-                                    if (SettingsHelper.VeifyUserAgainstEmail)
+                                if (SettingsHelper.CurrentSettings.VerifyUserAgainsEmail)
+                                {
+                                    if (Context.Campaign != null)
                                     {
-                                        CampaignItem contentDbItem = (CampaignItem)ItemUtilExt.GetContentDbItem(new ID(camp));
-
-                                        if (contentDbItem != null)
+                                        if (Context.Email != null)
                                         {
-                                            MessageItem message = Sitecore.Modules.EmailCampaign.Factory.GetMessage(GetMessageId(contentDbItem.Data));
-                                            if (message != null)
+                                            if (!SettingsHelper.IsLinkExpired(Context.Email))
                                             {
-                                                if (!SettingsHelper.IsLinkExpired(message))
+                                                if (Context.Email.Subscribers.Contains(contact))
                                                 {
-                                                    if (message.Subscribers.Contains(contact))
-                                                    {
-                                                        AuthenticationManager.Login(contact.InnerUser.Name, SettingsHelper.PersistentLogin);                                                        
-                                                        SessionHelper.AutoLoggedIn = true;
-                                                        if (GlobalSettings.Debug)
-                                                            Log.Debug("AutoLogin user  " + contact.Name + " from email: " + message.Subject);
-                                                    }
+                                                    AuthenticationManager.Login(contact.InnerUser.Name, SettingsHelper.CurrentSettings.PersistentLogin);                                                    
+                                                    SessionHelper.ShowAutoLoginMessage = true;
+                                                    SessionHelper.UserSettings = (Galiana.poco.Settings)SettingsHelper.CurrentSettings.Clone();
+                                                    SettingsHelper.SetPersonalizationManager(SessionHelper.UserSettings, contact);
+                                                    if (GlobalSettings.Debug)
+                                                        Log.Debug("AutoLogin user  " + contact.Name + " from email: " + Context.Email.Subject);
                                                 }
                                             }
                                         }
-                                        else
-                                        {
-                                            AuthenticationManager.Login(contact.InnerUser.Name, SettingsHelper.PersistentLogin);
-                                            SessionHelper.AutoLoggedIn = true;
-                                            if (GlobalSettings.Debug)
-                                                Log.Debug("AutoLogin user  " + contact.Name);
-                                        }
+                                    }
+                                    else
+                                    {
+                                        AuthenticationManager.Login(contact.InnerUser.Name, SettingsHelper.CurrentSettings.PersistentLogin);
+                                        SessionHelper.ShowAutoLoginMessage = true;
+                                        SessionHelper.UserSettings = (Galiana.poco.Settings)SettingsHelper.CurrentSettings.Clone();
+                                        SettingsHelper.SetPersonalizationManager(SessionHelper.UserSettings, contact);
+                                        if (GlobalSettings.Debug)
+                                            Log.Debug("AutoLogin user  " + contact.Name);
                                     }
                                 }
                             }
@@ -83,23 +80,13 @@ namespace Galiana.pipelines.httpRequestBegin
                     }
                 }
             }
+                
+            
             TimeSpan elapsed = timer.Elapsed;
             timer.Stop();
             if (GlobalSettings.Debug)
                 Log.Debug("AutoLogin took " + elapsed.TotalMilliseconds.ToString() + " miliseconds");
         }
-        private static string GetMessageId(string campaignData)
-        {
-            string str;
-            if (campaignData.Length != 76)
-            {
-                str = (campaignData.Length != 38 ? string.Empty : campaignData);
-            }
-            else
-            {
-                str = campaignData.Substring(38);
-            }
-            return str;
-        }
+        
     }
 }

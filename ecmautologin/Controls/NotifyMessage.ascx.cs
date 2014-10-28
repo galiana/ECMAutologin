@@ -5,23 +5,29 @@
 
     public partial class NotifyMessage : System.Web.UI.UserControl
     {
-        public string Message;
-        public NotifyMessage(string message):base()
+
+       
+
+        public NotifyMessage()
+            : base()
         {
-            this.Message = message;
+            
         }
         private void Page_Load(object sender, EventArgs e)
         {
-            if (SessionHelper.AutoLoggedIn)
+            if (SessionHelper.ShowAutoLoginMessage)
             {
-                if (!this.Page.ClientScript.IsClientScriptIncludeRegistered("autologinNotify"))
-                {
+                if (!this.Page.ClientScript.IsClientScriptIncludeRegistered("jquery"))
                     this.Page.ClientScript.RegisterClientScriptInclude("jquery", "http://code.jquery.com/jquery-1.11.0.min.js");
-                    this.Page.ClientScript.RegisterClientScriptInclude("autologinNotify", "/assets/notify.min.js");
-                    this.Page.ClientScript.RegisterStartupScript(this.GetType(), "autologinNotifyMessage", "<script type=\"text/javascript\">$.notify('" + this.Message + "');</script>");
+                if (!this.Page.ClientScript.IsClientScriptIncludeRegistered("autologinNotify"))
+                    this.Page.ClientScript.RegisterClientScriptInclude("autologinNotify", "/assets/notify.js");
+                if (!this.Page.ClientScript.IsClientScriptIncludeRegistered("autologinNotifyStyle") && !String.IsNullOrWhiteSpace(SessionHelper.UserSettings.NotifyCustomization))
+                    this.Page.ClientScript.RegisterClientScriptInclude("autologinNotifyStyle", SessionHelper.UserSettings.NotifyCustomization);                    
 
-                }
-                SessionHelper.AutoLoggedIn = false;
+                
+                this.Page.ClientScript.RegisterStartupScript(this.GetType(), "autologinNotifyMessage", "<script type=\"text/javascript\">$.notify(\"" + SessionHelper.UserSettings.PersonManager.ModifyText(SessionHelper.UserSettings.NotificationMessage) + "\",\"success\");</script>");
+                SessionHelper.ShowAutoLoginMessage = false;
+                SessionHelper.ClearCache();
             }
         }
     }

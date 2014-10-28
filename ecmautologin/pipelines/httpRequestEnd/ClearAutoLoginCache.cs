@@ -19,7 +19,9 @@ namespace Galiana.pipelines.httpRequestEnd
         public override void Process(HttpRequestArgs args)
         {
             Assert.ArgumentNotNull(args, "args");
-            SessionHelper.ClearCache();
+
+            if (Sitecore.Context.Site!= null && SettingsHelper.DefaultSettings.Sites.Contains(Sitecore.Context.Site.Name))
+                SessionHelper.ClearCache();
         }
     }
 }
