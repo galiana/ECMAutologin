@@ -1,6 +1,6 @@
-﻿namespace Galiana.Controls
+﻿namespace Galiana.EcmAutoLogin.Controls
 {
-    using Galiana.Helpers;
+    using Galiana.EcmAutoLogin;
     using System;
 
     public partial class NotifyMessage : System.Web.UI.UserControl

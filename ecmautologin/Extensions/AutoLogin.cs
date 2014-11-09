@@ -1,4 +1,4 @@
-﻿using Galiana.Helpers;
+﻿using Galiana.EcmAutoLogin.Helpers;
 using Galiana.poco;
 using Sitecore.Data.Items;
 using Sitecore.Modules.EmailCampaign;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Galiana.Extensions
+namespace Galiana.EcmAutoLogin.Extensions
 {
     public static class AutoLogin
     {

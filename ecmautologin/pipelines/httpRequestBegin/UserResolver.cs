@@ -1,4 +1,4 @@
-﻿using Galiana.Helpers;
+﻿using Galiana.EcmAutoLogin;
 using Sitecore.Analytics.Data.DataAccess.DataSets;
 using Sitecore.Analytics.Data.Items;
 using Sitecore.Configuration;
@@ -16,7 +16,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
-namespace Galiana.pipelines.httpRequestBegin
+namespace Galiana.EcmAutoLogin.Pipelines.httpRequestBegin
 {
     public class UserResolver : HttpRequestProcessor
     {

@@ -1,4 +1,5 @@
-﻿using Galiana.Helpers;
+﻿using Galiana.EcmAutoLogin;
+using Galiana.EcmAutoLogin.Helpers;
 using Sitecore.Data.Items;
 using Sitecore.Modules.EmailCampaign;
 using Sitecore.Modules.EmailCampaign.Core;
@@ -114,6 +115,11 @@ namespace Galiana.poco
                     Sitecore.Data.Fields.TextField very = (Sitecore.Data.Fields.TextField)settings.Fields[ConstantsHelper.AutoLoginOptions.NotifyCustomization];
                     this.NotifyCustomization = very.Value;
                 }
+                if (settings.Fields[ConstantsHelper.AutoLoginOptions.NotificationPlaceHolder] != null)
+                {
+                    Sitecore.Data.Fields.TextField very = (Sitecore.Data.Fields.TextField)settings.Fields[ConstantsHelper.AutoLoginOptions.NotificationPlaceHolder];
+                    this.NotificationPlaceHolder = very.Value;
+                }
 
                 Sites = SettingsHelper.DefaultSettings.Sites;
             }                  
@@ -130,7 +136,15 @@ namespace Galiana.poco
             s.Sites = this.Sites;
             s.VerifyUserAgainsEmail = this.VerifyUserAgainsEmail;
             s.NotificationControl = this.NotificationControl;
+            s.NotificationPlaceHolder = this.NotificationPlaceHolder;
             return s;
+        }
+
+        private string _notificationPlaceHolder;
+        public string NotificationPlaceHolder
+        {
+            get { return !String.IsNullOrWhiteSpace(_notificationPlaceHolder) ? _notificationPlaceHolder : "main"; }
+            set { _notificationPlaceHolder = value; }
         }
     }
 }

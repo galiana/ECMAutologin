@@ -11,8 +11,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Galiana</RootNamespace>
-    <AssemblyName>Galiana</AssemblyName>
+    <RootNamespace>Galiana.EcmAutoLogin</RootNamespace>
+    <AssemblyName>Galiana.EcmAutoLogin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -83,14 +83,13 @@
   <ItemGroup>
     <Content Include="assets\notify.min.js" />
     <Content Include="Controls\NotifyMessage.ascx" />
-    <Content Include="Web.config" />
-    <Content Include="Global.asax" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Config\Include\EcmAutoLogin.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="Packages\ECM AutoLogin-0.1.zip" />
+    <Content Include="Packages\EcmAutologin-1.0.zip" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serialization\" />

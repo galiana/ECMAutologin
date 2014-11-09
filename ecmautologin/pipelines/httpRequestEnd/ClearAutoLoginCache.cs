@@ -1,4 +1,4 @@
-﻿using Galiana.Helpers;
+﻿using Galiana.EcmAutoLogin;
 using Sitecore.Diagnostics;
 using Sitecore.Pipelines.HttpRequest;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Galiana.pipelines.httpRequestEnd
+namespace Galiana.EcmAutoLogin.pipelines.httpRequestEnd
 {
     public class ClearAutoLoginCache: HttpRequestProcessor
     {

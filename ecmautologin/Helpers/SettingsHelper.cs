@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Galiana.Extensions;
+using Galiana.EcmAutoLogin.Extensions;
 using Sitecore.Data.Items;
 using Sitecore.Modules.EmailCampaign.Core;
 
-namespace Galiana.Helpers
+namespace Galiana.EcmAutoLogin
 {
     public static class SettingsHelper
     {

@@ -1,5 +1,4 @@
-﻿using Galiana.Controls;
-using Galiana.Helpers;
+﻿using Galiana.EcmAutoLogin.Helpers;
 using Sitecore;
 using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
@@ -12,7 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 
-namespace Galiana.pipelines.insertRenderings
+namespace Galiana.EcmAutoLogin.pipelines.insertRenderings
 {
     public class AddAutoLoginNotifyMessage : InsertRenderingsProcessor
     {
@@ -36,7 +35,7 @@ namespace Galiana.pipelines.insertRenderings
             System.Web.UI.Page page = new System.Web.UI.Page();
             UserControl controlToLoad = page.LoadControl("~"+SessionHelper.UserSettings.NotificationControl.FilePath) as UserControl;
             RenderingReference rr = new RenderingReference(controlToLoad);
-            rr.Placeholder = "content";
+            rr.Placeholder = SessionHelper.UserSettings.NotificationPlaceHolder;
             args.Renderings.Add(rr);
            
             args.HasRenderings = args.Renderings.Count > 0;            
